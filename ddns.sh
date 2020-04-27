@@ -43,12 +43,6 @@ update_dns_record() {
 }
 
 ddns() {
-  ip_address=$(get_ip_address $1)
-  if [ $? -ne 0 ]; then
-    echo "Failed to get IPv$1 address"
-    return 1
-  fi
-
   dns_record_id=$(get_dns_record_id $2)
   if [ $? -ne 0 ]; then
     echo "$DOMAIN $2 record not found"
@@ -61,7 +55,13 @@ ddns() {
     return 1
   fi
 
-  if [ "$ip_address" == "$dns_record_content" ]; then
+  ip_address=$(get_ip_address $1)
+  if [ $? -ne 0 ]; then
+    echo "Failed to get IPv$1 address"
+    return 1
+  fi
+
+  if [ "$dns_record_content" == "$ip_address" ]; then
     echo "No update required for $DOMAIN $2 record ($dns_record_content)"
     return 0
   fi
