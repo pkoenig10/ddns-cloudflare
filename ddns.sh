@@ -11,6 +11,10 @@ cloudflare() {
   "$@"
 }
 
+log() {
+  echo $(date '+%Y/%m/%d %H:%M:%S') "$@"
+}
+
 get_dns_server() {
   case $1 in
     4)
@@ -45,41 +49,41 @@ update_dns_record() {
 ddns() {
   dns_record_id=$(get_dns_record_id $2)
   if [ $? -ne 0 ]; then
-    echo "$DOMAIN $2 record not found"
+    log "$DOMAIN $2 record not found"
     return 0
   fi
 
   dns_record_content=$(get_dns_record_content $dns_record_id)
   if [ $? -ne 0 ]; then
-    echo "Failed to get $DOMAIN $2 record content"
+    log "Failed to get $DOMAIN $2 record content"
     return 1
   fi
 
   ip_address=$(get_ip_address $1)
   if [ $? -ne 0 ]; then
-    echo "Failed to get IPv$1 address"
+    log "Failed to get IPv$1 address"
     return 1
   fi
 
   if [ "$dns_record_content" == "$ip_address" ]; then
-    echo "No update required for $DOMAIN $2 record ($dns_record_content)"
+    log "No update required for $DOMAIN $2 record ($dns_record_content)"
     return 0
   fi
 
-  echo "Updating $DOMAIN $2 record from $dns_record_content to $ip_address..."
+  log "Updating $DOMAIN $2 record from $dns_record_content to $ip_address..."
 
   update_dns_record $dns_record_id $ip_address
   if [ $? -ne 0 ]; then
-    echo "Failed to update $DOMAIN $2 record"
+    log "Failed to update $DOMAIN $2 record"
     return 1
   fi
 
-  echo "Updated $DOMAIN $2 record"
+  log "Updated $DOMAIN $2 record"
 }
 
 ZONE_ID=$(get_zone_id)
 if [ $? -ne 0 ]; then
-  echo "Zone for $DOMAIN was not found"
+  log "Zone for $DOMAIN was not found"
   exit 0
 fi
 
