@@ -1,10 +1,12 @@
-FROM alpine:3.12
+FROM rust:1.48.0 AS builder
 
-RUN apk add --no-cache \
-    bind-tools \
-    curl \
-    jq
+COPY . /app
 
-COPY ddns.sh /
+WORKDIR /app
+RUN cargo build --release
 
-ENTRYPOINT ["/ddns.sh"]
+FROM gcr.io/distroless/cc
+
+COPY --from=builder /app/target/release/ddns /
+
+ENTRYPOINT ["/ddns"]
