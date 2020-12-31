@@ -10,5 +10,5 @@ chrono = "0.4.19"
 log = { version = "0.4.11", features = ["std"] }
 reqwest = { version = "0.10.10", features = ["blocking", "json"] }
 serde = { version = "1.0", features = ["derive"] }
-trust-dns-client = "0.19.5"
+trust-dns-client = "0.20.0"
 url = "2.2.0"
