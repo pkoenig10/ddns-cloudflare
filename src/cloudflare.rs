@@ -92,12 +92,12 @@ impl Client {
 
         let status = response.status();
         let body: ResponseBody<ResultType> = response.json().with_context(|| Errors {
-            status: status,
+            status,
             errors: Vec::new(),
         })?;
 
         body.result.ok_or(anyhow!(Errors {
-            status: status,
+            status,
             errors: body.errors,
         }))
     }
