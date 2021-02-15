@@ -107,7 +107,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "993a608597367c6377b258c25d7120740f00ed23a2252b729b1932dd7866f908"
 
 [[package]]
-name = "ddns"
+name = "ddns-cloudflare"
 version = "0.0.0"
 dependencies = [
  "anyhow",
