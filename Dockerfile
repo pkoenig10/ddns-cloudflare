@@ -1,4 +1,4 @@
-FROM rust:1.52.1 AS builder
+FROM rust:1.53.0 AS builder
 
 COPY . /app
 
