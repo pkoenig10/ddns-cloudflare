@@ -43,12 +43,13 @@ where
         .answers()
         .first()
         .ok_or(anyhow!("No answers"))?
-        .rdata()
+        .data()
+        .ok_or(anyhow!("No record data"))?
         .as_txt()
         .ok_or(anyhow!("Invalid record type"))?
         .txt_data()
         .first()
-        .ok_or(anyhow!("No record data"))?;
+        .ok_or(anyhow!("No TXT record data"))?;
 
     from_utf8(data)
         .context("Invalid record data")?
