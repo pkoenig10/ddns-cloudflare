@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
 use std::error;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 use std::str::{from_utf8, FromStr};
@@ -42,14 +42,14 @@ where
     let data = response
         .answers()
         .first()
-        .ok_or(anyhow!("No answers"))?
+        .context("No answers")?
         .data()
-        .ok_or(anyhow!("No record data"))?
+        .context("No record data")?
         .as_txt()
-        .ok_or(anyhow!("Invalid record type"))?
+        .context("Invalid record type")?
         .txt_data()
         .first()
-        .ok_or(anyhow!("No TXT record data"))?;
+        .context("No TXT record data")?;
 
     from_utf8(data)
         .context("Invalid record data")?

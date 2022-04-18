@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
 use reqwest::{Method, StatusCode};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::error;
@@ -96,10 +96,10 @@ impl Client {
             errors: Vec::new(),
         })?;
 
-        body.result.ok_or(anyhow!(Errors {
+        body.result.context(Errors {
             status,
             errors: body.errors,
-        }))
+        })
     }
 
     fn url(path: &str) -> Url {

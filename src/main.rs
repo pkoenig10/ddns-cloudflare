@@ -1,5 +1,5 @@
 use ::log::{info, LevelFilter};
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
 use std::env;
 use std::net::{Ipv4Addr, Ipv6Addr};
 
@@ -22,8 +22,8 @@ fn main() -> Result<()> {
         .zones(&domain)
         .context("Failed to get zone")?
         .into_iter()
-        .nth(0)
-        .ok_or(anyhow!("Zone not found"))?;
+        .next()
+        .context("Zone not found")?;
 
     let dns_records = client
         .dns_records(&zone.id, &domain)

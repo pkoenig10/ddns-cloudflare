@@ -15,11 +15,12 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          components: rustfmt
+          components: clippy, rustfmt
           default: true
       - uses: Swatinem/rust-cache@v1
       - run: cargo fmt --all --check
       - run: cargo rustc --locked -- -D warnings
+      - run: cargo clippy --locked -- -D warnings
       - run: cargo test
 
   docker:
