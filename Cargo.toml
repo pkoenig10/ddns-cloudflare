@@ -7,7 +7,7 @@ edition = "2018"
 [dependencies]
 anyhow = "1.0.57"
 chrono = "0.4.19"
-log = { version = "0.4.16", features = ["std"] }
+log = { version = "0.4.17", features = ["std"] }
 reqwest = { version = "0.11.10", features = ["blocking", "json", "rustls-tls"], default-features = false }
 serde = { version = "1.0.137", features = ["derive"] }
 trust-dns-client = "0.21.2"
