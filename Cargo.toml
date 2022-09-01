@@ -9,6 +9,6 @@ anyhow = "1.0.59"
 chrono = "0.4.19"
 log = { version = "0.4.17", features = ["std"] }
 reqwest = { version = "0.11.11", features = ["blocking", "json", "rustls-tls"], default-features = false }
-serde = { version = "1.0.141", features = ["derive"] }
+serde = { version = "1.0.144", features = ["derive"] }
 trust-dns-client = "0.21.2"
 url = "2.2.2"
