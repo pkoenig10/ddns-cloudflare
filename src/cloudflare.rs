@@ -40,7 +40,7 @@ impl Client {
 
         self.request(
             Method::GET,
-            &format!("zones/{}/dns_records", zone_identifier),
+            &format!("zones/{zone_identifier}/dns_records"),
             Some(ListDnsRecordsQuery { name }),
             None::<()>,
         )
@@ -59,7 +59,7 @@ impl Client {
 
         self.request(
             Method::PATCH,
-            &format!("zones/{}/dns_records/{}", zone_identifier, identifier),
+            &format!("zones/{zone_identifier}/dns_records/{identifier}"),
             None::<()>,
             Some(PatchDnsRecordBody { content }),
         )
