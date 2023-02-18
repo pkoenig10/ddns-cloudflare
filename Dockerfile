@@ -23,7 +23,7 @@ RUN case $TARGETPLATFORM in \
 
     cp target/$TARGET/release/ddns-cloudflare .
 
-FROM gcr.io/distroless/cc
+FROM gcr.io/distroless/cc:latest@sha256:797a981b855a5082c5418ad8b387c0b9c1c507459f3c835705d0b03f49345baa
 
 COPY --from=builder /app/ddns-cloudflare /
 
