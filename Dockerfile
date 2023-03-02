@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM rust:1.67.0 AS builder
+FROM --platform=$BUILDPLATFORM rust:1.67.1 AS builder
 
 RUN apt-get update && apt-get install -y \
     gcc-aarch64-linux-gnu \
