@@ -5,7 +5,7 @@ authors = ["Patrick Koenig <pkoenig10@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-anyhow = "1.0.72"
+anyhow = "1.0.75"
 chrono = { version = "0.4.26", default-features = false, features = [
     "clock",
     "std",
