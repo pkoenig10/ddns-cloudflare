@@ -8,11 +8,11 @@ edition = "2018"
 anyhow = "1.0.75"
 chrono = "0.4.31"
 log = { version = "0.4.20", features = ["std"] }
-reqwest = { version = "0.11.20", default-features = false, features = [
+reqwest = { version = "0.11.22", default-features = false, features = [
     "blocking",
     "json",
     "rustls-tls",
 ] }
-serde = { version = "1.0.188", features = ["derive"] }
-trust-dns-client = "0.23.0"
+serde = { version = "1.0.189", features = ["derive"] }
+trust-dns-client = "0.23.1"
 url = "2.4.1"
