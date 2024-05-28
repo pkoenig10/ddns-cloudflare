@@ -2,6 +2,6 @@
 
 [![](https://github.com/pkoenig10/ddns-cloudflare/actions/workflows/ci.yml/badge.svg)][actions]
 
-Docker image for updating [Cloudflare](https://www.cloudflare.com/dns/) DNS records.
+A DDNS service using [Cloudflare DNS](https://www.cloudflare.com/dns/).
 
 [actions]: https://github.com/pkoenig10/ddns-cloudflare/actions
