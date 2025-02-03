@@ -7,7 +7,7 @@ edition = "2018"
 [dependencies]
 anyhow = "1.0.95"
 chrono = "0.4.39"
-log = { version = "0.4.22", features = ["std"] }
+log = { version = "0.4.25", features = ["std"] }
 reqwest = { version = "0.12.12", default-features = false, features = [
     "blocking",
     "json",
