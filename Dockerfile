@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM rust:1.87.0 AS builder
+FROM --platform=$BUILDPLATFORM rust:1.88.0 AS builder
 
 RUN apt-get update && apt-get install -y \
     gcc-aarch64-linux-gnu \
@@ -23,7 +23,7 @@ RUN case $TARGETPLATFORM in \
 
     cp target/$TARGET/release/ddns-cloudflare .
 
-FROM gcr.io/distroless/cc-debian12:latest@sha256:c53c9416a1acdbfd6e09abba720442444a3d1a6338b8db850e5e198b59af5570
+FROM gcr.io/distroless/cc-debian12:latest@sha256:eccec5274132c1be0ce5d2c8e6fe41033e64af5e987ccee9007826e4c012069d
 
 COPY --from=builder /app/ddns-cloudflare /
 
