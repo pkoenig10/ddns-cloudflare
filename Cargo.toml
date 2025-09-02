@@ -5,14 +5,14 @@ authors = ["Patrick Koenig <pkoenig10@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-anyhow = "1.0.98"
+anyhow = "1.0.99"
 chrono = "0.4.41"
 log = { version = "0.4.27", features = ["std"] }
-reqwest = { version = "0.12.22", default-features = false, features = [
+reqwest = { version = "0.12.23", default-features = false, features = [
     "blocking",
     "json",
     "rustls-tls",
 ] }
 serde = { version = "1.0.219", features = ["derive"] }
 trust-dns-client = "0.23.2"
-url = "2.5.4"
+url = "2.5.7"
