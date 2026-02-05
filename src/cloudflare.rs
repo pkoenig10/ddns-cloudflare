@@ -6,19 +6,19 @@ use std::fmt;
 use url::Url;
 
 pub struct Client {
-    client: reqwest::blocking::Client,
+    client: reqwest::Client,
     token: String,
 }
 
 impl Client {
     pub fn new(token: String) -> Client {
         Client {
-            client: reqwest::blocking::Client::new(),
+            client: reqwest::Client::new(),
             token,
         }
     }
 
-    pub fn zones(&self, name: &str) -> Result<Vec<Zone>> {
+    pub async fn zones(&self, name: &str) -> Result<Vec<Zone>> {
         #[derive(Debug, Serialize)]
         struct ListZonesQuery<'a> {
             pub name: &'a str,
@@ -30,9 +30,10 @@ impl Client {
             Some(ListZonesQuery { name }),
             None::<()>,
         )
+        .await
     }
 
-    pub fn dns_records(&self, zone_identifier: &str, name: &str) -> Result<Vec<DnsRecord>> {
+    pub async fn dns_records(&self, zone_identifier: &str, name: &str) -> Result<Vec<DnsRecord>> {
         #[derive(Debug, Serialize)]
         struct ListDnsRecordsQuery<'a> {
             pub name: &'a str,
@@ -44,9 +45,10 @@ impl Client {
             Some(ListDnsRecordsQuery { name }),
             None::<()>,
         )
+        .await
     }
 
-    pub fn patch_dns_record(
+    pub async fn patch_dns_record(
         &self,
         zone_identifier: &str,
         identifier: &str,
@@ -63,9 +65,10 @@ impl Client {
             None::<()>,
             Some(PatchDnsRecordBody { content }),
         )
+        .await
     }
 
-    fn request<ResultType, QueryType, BodyType>(
+    async fn request<ResultType, QueryType, BodyType>(
         &self,
         method: Method,
         path: &str,
@@ -88,10 +91,10 @@ impl Client {
             request = request.json(&body);
         }
 
-        let response = request.send()?;
+        let response = request.send().await?;
 
         let status = response.status();
-        let body: ResponseBody<ResultType> = response.json().with_context(|| Errors {
+        let body: ResponseBody<ResultType> = response.json().await.with_context(|| Errors {
             status,
             errors: Vec::new(),
         })?;

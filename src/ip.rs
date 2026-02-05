@@ -1,10 +1,11 @@
 use anyhow::{Context, Result};
+use hickory_client::client::{Client, ClientHandle};
+use hickory_client::proto::rr::{DNSClass, RecordType};
+use hickory_client::proto::runtime::TokioRuntimeProvider;
+use hickory_client::proto::udp::UdpClientStream;
 use std::error;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 use std::str::{from_utf8, FromStr};
-use trust_dns_client::client::{Client, SyncClient};
-use trust_dns_client::rr::{DNSClass, RecordType};
-use trust_dns_client::udp::UdpClientConnection;
 
 pub trait Ip: FromStr {
     fn name_server() -> IpAddr;
@@ -22,21 +23,28 @@ impl Ip for Ipv6Addr {
     }
 }
 
-pub fn query<I>() -> Result<I>
+pub async fn query<I>() -> Result<I>
 where
     I: Ip,
     <I as FromStr>::Err: error::Error + Send + Sync + 'static,
 {
-    let connection = UdpClientConnection::new(SocketAddr::new(I::name_server(), 53))
+    let connection = UdpClientStream::builder(
+        SocketAddr::new(I::name_server(), 53),
+        TokioRuntimeProvider::default(),
+    )
+    .build();
+    let (mut client, background) = Client::connect(connection)
+        .await
         .context("Failed to create connection")?;
-    let client = SyncClient::new(connection);
+    tokio::spawn(background);
 
     let response = client
         .query(
-            &"whoami.cloudflare".parse().unwrap(),
+            "whoami.cloudflare".parse().unwrap(),
             DNSClass::CH,
             RecordType::TXT,
         )
+        .await
         .context("Failed to execute query")?;
 
     let data = response
@@ -44,7 +52,6 @@ where
         .first()
         .context("No answers")?
         .data()
-        .context("No record data")?
         .as_txt()
         .context("Invalid record type")?
         .txt_data()
