@@ -5,7 +5,7 @@ use hickory_client::proto::runtime::TokioRuntimeProvider;
 use hickory_client::proto::udp::UdpClientStream;
 use std::error;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
-use std::str::{from_utf8, FromStr};
+use std::str::{FromStr, from_utf8};
 
 pub trait Ip: FromStr {
     fn name_server() -> IpAddr;

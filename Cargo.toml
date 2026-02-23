@@ -2,13 +2,12 @@
 name = "ddns-cloudflare"
 version = "0.0.0"
 authors = ["Patrick Koenig <pkoenig10@gmail.com>"]
-edition = "2018"
+edition = "2024"
 
 [dependencies]
 anyhow = "1.0.100"
-chrono = "0.4.43"
 hickory-client = "0.25.2"
-log = { version = "0.4.29", features = ["std"] }
+jiff = "0.2.20"
 reqwest = { version = "0.12.28", default-features = false, features = [
     "json",
     "rustls-tls",
