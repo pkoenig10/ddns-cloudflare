@@ -1,6 +1,6 @@
 use anyhow::{Context, Result};
 use reqwest::{Method, StatusCode};
-use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use serde::{Deserialize, Serialize, de::DeserializeOwned};
 use std::error;
 use std::fmt;
 use url::Url;

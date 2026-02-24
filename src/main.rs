@@ -1,23 +1,29 @@
-use ::log::{info, LevelFilter};
 use anyhow::{Context, Result};
-use std::env;
+use log::log;
+use std::env::{self, VarError};
 use std::net::{Ipv4Addr, Ipv6Addr};
+use std::process::ExitCode;
 
 mod cloudflare;
 mod ip;
 mod log;
 
-const API_TOKEN_ENV_VAR: &str = "API_TOKEN";
-const DOMAIN_ENV_VAR: &str = "DOMAIN";
-
 #[tokio::main]
-async fn main() -> Result<()> {
-    log::init(LevelFilter::Info).context("Failed to initialize logger")?;
+async fn main() -> ExitCode {
+    match run().await {
+        Ok(_) => ExitCode::SUCCESS,
+        Err(e) => {
+            log!("{:#}", e);
+            ExitCode::FAILURE
+        }
+    }
+}
 
-    let token = env::var(API_TOKEN_ENV_VAR).context("Failed to fetch API token")?;
-    let domain = env::var(DOMAIN_ENV_VAR).context("Failed to fetch domain")?;
+async fn run() -> Result<()> {
+    let cloudflare_api_token = env_var("CLOUDFLARE_API_TOKEN", None)?;
+    let domain = env_var("DOMAIN", None)?;
 
-    let client = cloudflare::Client::new(token);
+    let client = cloudflare::Client::new(cloudflare_api_token);
 
     let zone = client
         .zones(&domain)
@@ -46,9 +52,10 @@ async fn main() -> Result<()> {
         };
 
         if dns_record.content == ip_address {
-            info!(
+            log!(
                 "No update required for {} record ({})",
-                dns_record.type_, dns_record.content
+                dns_record.type_,
+                dns_record.content
             );
             continue;
         }
@@ -63,11 +70,29 @@ async fn main() -> Result<()> {
                 )
             })?;
 
-        info!(
+        log!(
             "Updated {} record from {} to {}",
-            dns_record.type_, dns_record.content, ip_address
+            dns_record.type_,
+            dns_record.content,
+            ip_address
         );
     }
 
     Ok(())
+}
+
+fn env_var(name: &str, default: Option<&str>) -> Result<String> {
+    let value = env::var(name)
+        .or_else(|err| {
+            if let VarError::NotPresent = err
+                && let Some(default) = default
+            {
+                Ok(default.to_string())
+            } else {
+                Err(err)
+            }
+        })
+        .with_context(|| format!("Environment variable {} is required but not set", name))?;
+
+    Ok(value)
 }
