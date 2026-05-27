@@ -1,8 +1,8 @@
-use anyhow::{Context, Result};
-use hickory_client::client::{Client, ClientHandle};
-use hickory_client::proto::rr::{DNSClass, RecordType};
-use hickory_client::proto::runtime::TokioRuntimeProvider;
-use hickory_client::proto::udp::UdpClientStream;
+use anyhow::{Context, Result, bail};
+use hickory_net::client::{Client, ClientHandle};
+use hickory_net::proto::rr::{DNSClass, RData::TXT, RecordType};
+use hickory_net::runtime::TokioRuntimeProvider;
+use hickory_net::udp::UdpClientStream;
 use std::error;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 use std::str::{FromStr, from_utf8};
@@ -33,9 +33,7 @@ where
         TokioRuntimeProvider::default(),
     )
     .build();
-    let (mut client, background) = Client::connect(connection)
-        .await
-        .context("Failed to create connection")?;
+    let (mut client, background) = Client::<TokioRuntimeProvider>::from_sender(connection);
     tokio::spawn(background);
 
     let response = client
@@ -47,16 +45,13 @@ where
         .await
         .context("Failed to execute query")?;
 
-    let data = response
-        .answers()
-        .first()
-        .context("No answers")?
-        .data()
-        .as_txt()
-        .context("Invalid record type")?
-        .txt_data()
-        .first()
-        .context("No TXT record data")?;
+    let record = response.answers.first().context("No answers")?;
+
+    let TXT(txt) = &record.data else {
+        bail!("Invalid record type")
+    };
+
+    let data = txt.txt_data.first().context("No TXT record data")?;
 
     from_utf8(data)
         .context("Invalid record data")?
